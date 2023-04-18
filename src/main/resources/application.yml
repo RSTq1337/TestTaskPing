@@ -1,0 +1,4 @@
+spring.datasource.url=${DATASOURSE_URL}
+spring.datasource.username=${DATASOURSE_USENAME}
+spring.datasource.password=${DATASOURSE_PASSWORD}
+spring.datasource.driver-class-name=org.postgresql.Driver
