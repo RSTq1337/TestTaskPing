@@ -2,7 +2,11 @@ package com.example.testtaskping.controller;
 
 import com.example.testtaskping.model.Ping;
 import com.example.testtaskping.model.PingResultDto;
+import com.example.testtaskping.model.TestStatus;
 import com.example.testtaskping.service.PingService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,13 +33,15 @@ public class PingController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<PingResultDto>> searchPingResults(
-            @RequestParam(value = "query", required = false) String query,
-            @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            @RequestParam(value = "status", required = false) String status,
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page) {
-        List<PingResultDto> pingResultDtos = pingService.search(query, startDate, endDate, status, page);
+    public ResponseEntity<Page<PingResultDto>> searchPingResults(
+            @RequestParam(name = "query", required = false) String query,
+            @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(name = "status", required = false) TestStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PingResultDto> pingResultDtos = pingService.search(query, startDate, endDate, status, pageable);
         return ResponseEntity.ok(pingResultDtos);
     }
 

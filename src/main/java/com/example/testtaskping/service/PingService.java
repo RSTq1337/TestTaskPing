@@ -33,14 +33,11 @@ public class PingService {
                 .collect(Collectors.toList());
     }
 
-    public Page<PingResultDto> search(String keyword, String fromDate, String toDate, String status, Pageable pageable) {
-
-        LocalDate from = LocalDate.parse(fromDate);
-        LocalDate to = LocalDate.parse(toDate);
+    public Page<PingResultDto> search(String keyword, LocalDate fromDate, LocalDate toDate, TestStatus status, Pageable pageable) {
 
         Specification<Ping> specification = Specification.where(PingResultSpecification.containsKeyword(keyword))
-                .and(PingResultSpecification.betweenDates(from, to))
-                .and(PingResultSpecification.matchStatus(TestStatus.fromString(status)));
+                .and(PingResultSpecification.betweenDates(fromDate, toDate))
+                .and(PingResultSpecification.matchStatus(status));
 
         Page<Ping> results = pingRepository.findAll(specification, pageable);
 

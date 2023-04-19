@@ -1,4 +1,6 @@
-spring.datasource.url=${DATASOURSE_URL}
-spring.datasource.username=${DATASOURSE_USENAME}
-spring.datasource.password=${DATASOURSE_PASSWORD}
-spring.datasource.driver-class-name=org.postgresql.Driver
+spring:
+  datasource:
+    url: ${DATASOURSE_URL}
+    username: ${DATASOURSE_USERNAME}
+    password: ${DATASOURSE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
