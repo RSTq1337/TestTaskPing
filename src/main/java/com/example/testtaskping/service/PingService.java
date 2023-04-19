@@ -17,15 +17,13 @@ import java.util.stream.Collectors;
 @Service
 public class PingService {
     private final PingRepository pingRepository;
-    private final PingResultMapper pingResultMapper;
 
     public PingService(PingRepository pingRepository, PingResultMapper pingResultMapper) {
         this.pingRepository = pingRepository;
-        this.pingResultMapper = pingResultMapper;
     }
 
     public List<PingResultDto> getAllPingResults(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("dateChecked").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("checkDate").descending());
         Page<Ping> pingResultsPage = pingRepository.findAll(pageable);
         List<Ping> pingResults = pingResultsPage.getContent();
         return pingResults.stream()
@@ -33,19 +31,31 @@ public class PingService {
                 .collect(Collectors.toList());
     }
 
-    public Page<PingResultDto> search(String keyword, LocalDate fromDate, LocalDate toDate, TestStatus status, Pageable pageable) {
+    public Page<PingResultDto> search(String ip, String domain, LocalDate startDate, LocalDate endDate, TestStatus status, Pageable pageable) {
+        Specification<Ping> specification = Specification.where(null);
 
-        Specification<Ping> specification = Specification.where(PingResultSpecification.containsKeyword(keyword))
-                .and(PingResultSpecification.betweenDates(fromDate, toDate))
-                .and(PingResultSpecification.matchStatus(status));
+        if (ip != null && !ip.isEmpty()) {
+            specification = specification.and(PingResultSpecification.containsIp(ip));
+        }
 
-        Page<Ping> results = pingRepository.findAll(specification, pageable);
+        if (domain != null && !domain.isEmpty()) {
+            specification = specification.and(PingResultSpecification.containsDomain(domain));
+        }
 
-        List<PingResultDto> dtos = results.stream()
-                .map(PingResultMapper::toDto)
-                .collect(Collectors.toList());
+        if (startDate != null) {
+            specification = specification.and(PingResultSpecification.greaterThanOrEqualToStartDate(startDate));
+        }
 
-        return new PageImpl<>(dtos, pageable, results.getTotalElements());
+        if (endDate != null) {
+            specification = specification.and(PingResultSpecification.lessThanOrEqualToEndDate(endDate));
+        }
+
+        if (status != null) {
+            specification = specification.and(PingResultSpecification.matchStatus(status));
+        }
+
+        Page<Ping> pings = pingRepository.findAll(specification, pageable);
+        return pings.map(PingResultMapper::toDto);
     }
 
     public PingResultDto getPingResultById(Long id) throws PingResultNotFoundException {

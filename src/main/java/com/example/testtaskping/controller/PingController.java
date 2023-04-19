@@ -25,7 +25,7 @@ public class PingController {
         this.pingService = pingService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<PingResultDto>> getAllPingResults(@RequestParam(defaultValue = "0") int page,
                                                                  @RequestParam(defaultValue = "5") int size) {
         List<PingResultDto> pingResults = pingService.getAllPingResults(page, size);
@@ -34,14 +34,15 @@ public class PingController {
 
     @GetMapping("/search")
     public ResponseEntity<Page<PingResultDto>> searchPingResults(
-            @RequestParam(name = "query", required = false) String query,
+            @RequestParam(name = "ip", required = false) String ip,
+            @RequestParam(name = "domain", required = false) String domain,
             @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(name = "status", required = false) TestStatus status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PingResultDto> pingResultDtos = pingService.search(query, startDate, endDate, status, pageable);
+        Page<PingResultDto> pingResultDtos = pingService.search(ip, domain, startDate, endDate, status, pageable);
         return ResponseEntity.ok(pingResultDtos);
     }
 

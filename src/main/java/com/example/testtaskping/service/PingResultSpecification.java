@@ -2,6 +2,7 @@ package com.example.testtaskping.service;
 
 import com.example.testtaskping.model.Ping;
 import com.example.testtaskping.model.TestStatus;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.criteria.Predicate;
@@ -55,17 +57,6 @@ public class PingResultSpecification implements Specification<Ping> {
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }
-    public static Specification<Ping> containsKeyword(String keyword) {
-        return (root, query, cb) -> {
-            Predicate domainPredicate = cb.like(cb.lower(root.get("domain")), "%" + keyword.toLowerCase() + "%");
-            Predicate ipPredicate = cb.like(cb.lower(root.get("ipAddress")), "%" + keyword.toLowerCase() + "%");
-            return cb.or(domainPredicate, ipPredicate);
-        };
-    }
-
-    public static Specification<Ping> betweenDates(LocalDate startDate, LocalDate endDate) {
-        return (root, query, builder) -> builder.between(root.get("pingDate"), startDate, endDate);
-    }
 
     public static Specification<Ping> matchStatus(TestStatus status) {
         return (root, query, builder) -> {
@@ -74,5 +65,38 @@ public class PingResultSpecification implements Specification<Ping> {
             }
             return builder.equal(root.get("status"), status);
         };
+    }
+
+    public static Specification<Ping> containsIp(String ip) {
+        return (root, query, builder) -> {
+            if (ip == null) {
+                return null;
+            }
+            return builder.like(root.get("ipAddress"), "%" + ip + "%");
+        };
+    }
+
+    public static Specification<Ping> containsDomain(String domain) {
+        if (StringUtils.isEmpty(domain)) {
+            return null;
+        }
+        return (root, query, builder) ->
+                builder.like(root.get("domain"), "%" + domain + "%");
+    }
+
+    public static Specification<Ping> greaterThanOrEqualToStartDate(LocalDate startDate) {
+        return (root, query, builder) -> {
+            if (startDate == null) {
+                return null;
+            }
+            return builder.greaterThanOrEqualTo(root.get("date"), startDate.atStartOfDay());
+        };
+    }
+
+    public static Specification<Ping> lessThanOrEqualToEndDate(LocalDate endDate) {
+        if (endDate == null) {
+            return null;
+        }
+        return (root, query, builder) -> builder.lessThanOrEqualTo(root.get("date"), endDate.atTime(LocalTime.MAX));
     }
 }
