@@ -15,12 +15,6 @@
     <description>TestTaskPing</description>
     <properties>
         <java.version>17</java.version>
-        <!--suppress UnresolvedMavenProperty -->
-        <datasourse.url>${DATASOURSE_URL}</datasourse.url>
-        <!--suppress UnresolvedMavenProperty -->
-        <datasourse.url>${DATASOURSE_USER}</datasourse.url>
-        <!--suppress UnresolvedMavenProperty -->
-        <datasourse.url>${DATASOURSE_PASSWORD}</datasourse.url>
     </properties>
     <dependencies>
         <dependency>
@@ -44,7 +38,6 @@
             <artifactId>postgresql</artifactId>
             <version>42.6.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -54,6 +47,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

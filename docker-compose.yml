@@ -1,12 +1,23 @@
-version: '3.3'
+version: '3.8'
 services:
-  app:
-    container_name: app
+  ping:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ping
     depends_on:
       - postgres
     ports:
       - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=${DATASOURSE_URL}
+      - SPRING_DATASOURCE_USERNAME=${DATASOURSE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DATASOURSE_PASSWORD}
   postgres:
+    env_file:
+      - .env
     image: 'postgres:14.5-bullseye'
     restart: always
     container_name: postgresForTestTask
@@ -15,4 +26,7 @@ services:
     environment:
       - POSTGRES_USER=${DATASOURSE_USERNAME}
       - POSTGRES_PASSWORD=${DATASOURSE_PASSWORD}
-      - POSTGRES_DB=${DATASOURSE_DB_NAME}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+volumes:
+  dbdata:

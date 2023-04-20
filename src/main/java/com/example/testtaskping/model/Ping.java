@@ -32,6 +32,14 @@ public class Ping {
         this.pingResult = pingResult;
     }
 
+    public Ping(String ipAddress, String domainName, LocalDateTime checkDate, String status, String pingResult) {
+        this.ipAddress = ipAddress;
+        this.domainName = domainName;
+        this.checkDate = checkDate;
+        this.status = status;
+        this.pingResult = pingResult;
+    }
+
     public Long getId() {
         return id;
     }
