@@ -1,23 +1,19 @@
 package com.example.testtaskping.controller;
 
-import com.example.testtaskping.model.Ping;
+import com.example.testtaskping.exception.PingResultNotFoundException;
 import com.example.testtaskping.model.PingResultDto;
-import com.example.testtaskping.model.TestStatus;
+import com.example.testtaskping.model.SearchForm;
 import com.example.testtaskping.service.PingService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.util.List;
-
-@RestController
+@Controller
 public class PingController {
     private final PingService pingService;
 
@@ -26,32 +22,47 @@ public class PingController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<PingResultDto>> getAllPingResults(@RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "5") int size) {
-        List<PingResultDto> pingResults = pingService.getAllPingResults(page, size);
-        return ResponseEntity.ok(pingResults);
+    public String getAllPingResults(Model model,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "5") int size) {
+        Page<PingResultDto> pingResults = pingService.getAllPingResults(page, size);
+        model.addAttribute("pingResults", pingResults.getContent());
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", pingResults.getTotalPages());
+        return "ping-results";
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<PingResultDto>> searchPingResults(
-            @RequestParam(name = "ip", required = false) String ip,
-            @RequestParam(name = "domain", required = false) String domain,
-            @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            @RequestParam(name = "status", required = false) TestStatus status,
+    public String searchPingResults(
+            @ModelAttribute("searchForm") SearchForm searchForm,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<PingResultDto> pingResultDtos = pingService.search(ip, domain, startDate, endDate, status, pageable);
-        return ResponseEntity.ok(pingResultDtos);
+            @RequestParam(defaultValue = "5") int size,
+            Model model,
+            HttpServletRequest request) {
+        Page<PingResultDto> pingResultDtos = pingService.search(
+                searchForm.getIp(),
+                searchForm.getDomain(),
+                searchForm.getStartDate(),
+                searchForm.getEndDate(),
+                searchForm.getStatus(),
+                page,
+                size);
+        model.addAttribute("pingResults", pingResultDtos);
+        model.addAttribute("param", request.getParameterMap());
+        model.addAttribute("searchForm", new SearchForm());
+        return "ping-search";
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PingResultDto> getPingResult(@PathVariable Long id) {
-        PingResultDto pingResultDto = pingService.getPingResultById(id);
-        if (pingResultDto == null) {
-            return ResponseEntity.notFound().build();
+    public String getPingResult(@PathVariable Long id, Model model) {
+        PingResultDto pingResultDto;
+        try {
+            pingResultDto = pingService.getPingResultById(id);
+        } catch (PingResultNotFoundException exception) {
+            return "404";
         }
-        return ResponseEntity.ok(pingResultDto);
+        model.addAttribute("pingResult", pingResultDto);
+        return "ping-search-id";
     }
 }

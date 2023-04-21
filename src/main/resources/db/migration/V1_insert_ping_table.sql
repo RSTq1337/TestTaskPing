@@ -1,5 +1,21 @@
-INSERT INTO ping (ip_address, domain_name, check_date, status, ping_result)
-VALUES ('192.168.0.1', 'example.com', NOW(), 'Success', 'Ping successful');
-
-INSERT INTO ping (ip_address, domain_name, check_date, status, ping_result)
-VALUES ('10.0.0.1', 'google.com', NOW(), 'Failure', 'Ping fail');
+INSERT INTO ping (id, ip_address, domain_name, check_date, status, ping_result)
+VALUES (1,'192.168.0.1','example.com','2023-04-20 12:34:33.185538','Success','Ping successful'),
+       (2,'10.0.0.1','google.com',NOW(),'Failure','Ping fail'),
+       (3,'10.0.0.1','google.com1',NOW(),'Failure','Ping fail'),
+       (4,'10.0.0.1','google.com2',NOW(),'Failure','Ping fail'),
+       (5,'10.0.0.1','google.com3',NOW(),'Failure','Ping fail'),
+       (6,'10.0.0.1','google.com4',NOW(),'Failure','Ping fail'),
+       (7,'10.0.0.1','google.com5',NOW(),'Failure','Ping fail'),
+       (8,'10.0.0.1','google.com6',NOW(),'Failure','Ping fail'),
+       (9,'10.0.0.1','google.com7',NOW(),'Failure','Ping fail'),
+       (15,'10.0.0.1','google.com8',NOW(),'Failure','Ping fail'),
+       (16,'10.0.0.1','google.com9',NOW(),'Failure','Ping fail'),
+       (17,'10.0.0.1','google.com10',NOW(),'Failure','Ping fail'),
+       (18,'10.0.0.1','google.com11',NOW(),'Failure','Ping fail'),
+       (20,'10.0.0.1','google.com12',NOW(),'Failure','Ping fail'),
+       (21,'10.0.0.1','google.com13',NOW(),'Failure','Ping fail'),
+       (23,'10.0.0.1','google.com14',NOW(),'Failure','Ping fail'),
+       (24,'10.0.0.1','google.com15',NOW(),'Failure','Ping fail'),
+       (25,'10.0.0.1','google.com16',NOW(),'Failure','Ping fail'),
+       (26,'10.0.0.1','google.com17',NOW(),'Failure','Ping fail'),
+       (27,'10.0.0.1','google.com18',NOW(),'Failure','Ping fail');

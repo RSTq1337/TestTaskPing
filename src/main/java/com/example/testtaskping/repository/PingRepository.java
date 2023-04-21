@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PingRepository extends JpaRepository<Ping, Long> {
     Page<Ping> findAll(Specification<Ping> specification, Pageable pageable);
+    Page<Ping> findAll(Pageable pageable);
 }

@@ -4,3 +4,6 @@ spring:
     username: ${DATASOURSE_USERNAME}
     password: ${DATASOURSE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+  thymeleaf:
+    enabled: true
+    prefix: classpath:/templates/

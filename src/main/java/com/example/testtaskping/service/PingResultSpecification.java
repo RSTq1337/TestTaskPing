@@ -63,7 +63,7 @@ public class PingResultSpecification implements Specification<Ping> {
             if (status == null) {
                 return null;
             }
-            return builder.equal(root.get("status"), status);
+            return builder.equal(root.get("status"), status.getName());
         };
     }
 
@@ -81,7 +81,7 @@ public class PingResultSpecification implements Specification<Ping> {
             return null;
         }
         return (root, query, builder) ->
-                builder.like(root.get("domain"), "%" + domain + "%");
+                builder.like(root.get("domainName"), "%" + domain + "%");
     }
 
     public static Specification<Ping> greaterThanOrEqualToStartDate(LocalDate startDate) {
@@ -89,7 +89,7 @@ public class PingResultSpecification implements Specification<Ping> {
             if (startDate == null) {
                 return null;
             }
-            return builder.greaterThanOrEqualTo(root.get("date"), startDate.atStartOfDay());
+            return builder.greaterThanOrEqualTo(root.get("checkDate"), startDate.atStartOfDay());
         };
     }
 
@@ -97,6 +97,6 @@ public class PingResultSpecification implements Specification<Ping> {
         if (endDate == null) {
             return null;
         }
-        return (root, query, builder) -> builder.lessThanOrEqualTo(root.get("date"), endDate.atTime(LocalTime.MAX));
+        return (root, query, builder) -> builder.lessThanOrEqualTo(root.get("checkDate"), endDate.atTime(LocalTime.MAX));
     }
 }

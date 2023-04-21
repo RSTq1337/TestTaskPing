@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8"/>
+    <title>Ping Results</title>
+</head>
+<body>
+<h1>Ping Results</h1>
+<form th:action="@{/search}" th:object="${searchForm}" method="get">
+    <input type="text" th:field="*{ip}" placeholder="IP Address">
+    <input type="text" th:field="*{domain}" placeholder="Domain Name">
+    <input type="date" th:field="*{startDate}" placeholder="Start Date">
+    <input type="date" th:field="*{endDate}" placeholder="End Date">
+    <select th:field="*{status}">
+        <option value="">All</option>
+        <option value="SUCCESS">Success</option>
+        <option value="FAILURE">Fail</option>
+    </select>
+    <button type="submit">Search</button>
+</form>
+<table>
+    <thead>
+    <tr>
+        <th>IP Address</th>
+        <th>Domain Name</th>
+        <th>Check Date</th>
+        <th>Status</th>
+        <th>Ping Result</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pingResult : ${pingResults.content}">
+        <td th:text="${pingResult.getIpAddress()}"></td>
+        <td th:text="${pingResult.getDomainName()}"></td>
+        <td th:text="${pingResult.getTestDate()}"></td>
+        <td th:text="${pingResult.getStatus()}"></td>
+        <td th:text="${pingResult.getPingResult()}"></td>
+    </tr>
+    </tbody>
+</table>
+<div th:if="${pingResults.totalPages > 1}">
+    <ul class="pagination">
+        <li class="page-item" th:classappend="${pingResults.first ? 'disabled' : ''}">
+            <a th:href="@{/search(ip=${param.ip},
+                        domain=${param.domain},
+                        startDate=${param.startDate},
+                        endDate=${param.endDate},
+                        status=${param.status},
+                        page=${pingResults.previousPageable()?.pageNumber},
+                        size=${pingResults.size})}"
+               th:if="${pingResults.hasPrevious()}">Previous</a>
+        </li>
+        <li class="page-item" th:classappend="${pingResults.last ? 'disabled' : ''}">
+            <a th:href="@{/search(ip=${param.ip},
+                        domain=${param.domain},
+                        startDate=${param.startDate},
+                        endDate=${param.endDate},
+                        status=${param.status},
+                        page=${pingResults.nextPageable()?.pageNumber},
+                        size=${pingResults.size})}"
+               th:if="${pingResults.hasNext()}">Next</a>
+                <span aria-hidden="true">&gt;</span>
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

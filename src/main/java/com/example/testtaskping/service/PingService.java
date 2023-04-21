@@ -6,32 +6,31 @@ import com.example.testtaskping.model.PingResultDto;
 import com.example.testtaskping.model.TestStatus;
 import com.example.testtaskping.model.mapper.PingResultMapper;
 import com.example.testtaskping.repository.PingRepository;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PingService {
     private final PingRepository pingRepository;
 
-    public PingService(PingRepository pingRepository, PingResultMapper pingResultMapper) {
+    public PingService(PingRepository pingRepository) {
         this.pingRepository = pingRepository;
     }
 
-    public List<PingResultDto> getAllPingResults(int page, int size) {
+    public Page<PingResultDto> getAllPingResults(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("checkDate").descending());
-        Page<Ping> pingResultsPage = pingRepository.findAll(pageable);
-        List<Ping> pingResults = pingResultsPage.getContent();
-        return pingResults.stream()
-                .map(PingResultMapper::toDto)
-                .collect(Collectors.toList());
+        Page<Ping> pings = pingRepository.findAll(pageable);
+        return pings.map(ping -> new PingResultDto(ping.getIpAddress(), ping.getDomainName(), ping.getTestDate(), ping.getStatus(), ping.getPingResult()));
+
     }
 
-    public Page<PingResultDto> search(String ip, String domain, LocalDate startDate, LocalDate endDate, TestStatus status, Pageable pageable) {
+    public Page<PingResultDto> search(String ip, String domain, LocalDate startDate, LocalDate endDate, TestStatus status, int page, int size) {
         Specification<Ping> specification = Specification.where(null);
 
         if (ip != null && !ip.isEmpty()) {
@@ -53,7 +52,7 @@ public class PingService {
         if (status != null) {
             specification = specification.and(PingResultSpecification.matchStatus(status));
         }
-
+        Pageable pageable = PageRequest.of(page, size, Sort.by("checkDate").descending());
         Page<Ping> pings = pingRepository.findAll(specification, pageable);
         return pings.map(PingResultMapper::toDto);
     }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="icon" href="data:,">
+    <meta charset="UTF-8">
+    <title>Ping Results</title>
+</head>
+<body>
+<h1>Ping Result</h1>
+<table>
+    <tr>
+        <th>IP Address</th>
+        <td th:text="${pingResult.getIpAddress()}"></td>
+    </tr>
+    <tr>
+        <th>Domain Name</th>
+        <td th:text="${pingResult.getDomainName()}"></td>
+    </tr>
+    <tr>
+        <th>Check Date</th>
+        <td th:text="${pingResult.getTestDate()}"></td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td th:text="${pingResult.getStatus()}"></td>
+    </tr>
+    <tr>
+        <th>Ping Result</th>
+        <td th:text="${pingResult.getPingResult()}"></td>
+    </tr>
+</table>
+</body>
+</html>
