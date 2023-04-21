@@ -68,7 +68,6 @@ public class PingController {
             return "404";
         }
         model.addAttribute("pingResult", pingResultDto);
-//        model.addAttribute("searchIp", new SearchIp());
         return "ping-search-id";
     }
 }
