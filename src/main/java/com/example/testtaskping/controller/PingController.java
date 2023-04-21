@@ -2,18 +2,17 @@ package com.example.testtaskping.controller;
 
 import com.example.testtaskping.exception.PingResultNotFoundException;
 import com.example.testtaskping.model.PingResultDto;
-import com.example.testtaskping.model.SearchForm;
+import com.example.testtaskping.model.attribute.SearchForm;
+import com.example.testtaskping.model.attribute.SearchIp;
 import com.example.testtaskping.service.PingService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/")
 public class PingController {
     private final PingService pingService;
 
@@ -54,15 +53,22 @@ public class PingController {
         return "ping-search";
     }
 
-    @GetMapping("/{id}")
-    public String getPingResult(@PathVariable Long id, Model model) {
+    @GetMapping("/")
+    public String showForm(Model model) {
+        model.addAttribute("searchIp", new SearchIp());
+        return "ping-search-without-id";
+    }
+    @GetMapping("/ping")
+    public String getPingResult(@ModelAttribute("searchIp") SearchIp id, Model model) {
         PingResultDto pingResultDto;
         try {
-            pingResultDto = pingService.getPingResultById(id);
+            Long idForSearch = Long.valueOf(id.getIp());
+            pingResultDto = pingService.getPingResultById(idForSearch);
         } catch (PingResultNotFoundException exception) {
             return "404";
         }
         model.addAttribute("pingResult", pingResultDto);
+//        model.addAttribute("searchIp", new SearchIp());
         return "ping-search-id";
     }
 }

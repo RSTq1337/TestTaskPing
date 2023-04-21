@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ping Search</title>
+</head>
+<body>
+<h1>Find Ping Result by ID</h1>
+<form th:action="@{/ping}" th:object="${searchIp}" method="get">
+    <input type="text" th:field="*{ip}" placeholder="ID">
+    <button type="submit">Search</button>
+</form>
+</body>
+</html>

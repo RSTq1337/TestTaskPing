@@ -3,10 +3,17 @@
 <head>
     <link rel="icon" href="data:,">
     <meta charset="UTF-8">
-    <title>Ping Results</title>
 </head>
 <body>
 <h1>Ping Result</h1>
+
+<h1>Find Ping Result by ID</h1>
+<form th:action="@{/ping}" method="get" th:object="${searchIp}">
+    <label for="id">ID:</label>
+    <input type="text" id="id" name="id" th:field="*{ip}" required>
+    <button type="submit">Search</button>
+</form>
+
 <table>
     <tr>
         <th>IP Address</th>

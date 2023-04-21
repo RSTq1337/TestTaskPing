@@ -13,6 +13,9 @@ public class PingResultDto {
 
     private String pingResult;
 
+    public PingResultDto() {
+    }
+
     public PingResultDto(String ipAddress, String domain, LocalDateTime dateChecked, String status, String pingResult) {
         this.ipAddress = ipAddress;
         this.domain = domain;

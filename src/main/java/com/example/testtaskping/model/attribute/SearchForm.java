@@ -1,4 +1,6 @@
-package com.example.testtaskping.model;
+package com.example.testtaskping.model.attribute;
+
+import com.example.testtaskping.model.TestStatus;
 
 import java.time.LocalDate;
 
